@@ -1,0 +1,53 @@
+# Accounting policy for the comps. Applied identically to every peer.
+# LOCKED = decided by user (2026-11-19). OPEN = default proposed, awaiting confirmation.
+
+output_unit: INR_crore          # all reported units (million / crore / lakh) converted in Python
+
+ebitda:
+  # LOCKED: Adjusted EBITDA = Revenue from operations - operating expenses (continuing ops).
+  #   = PBT(continuing) + finance costs + D&A + exceptional charge - (other income - FX within other income)
+  definition: revenue_from_operations_less_operating_expenses
+  exclude_other_income: true                 # LOCKED
+  # LOCKED: FX gain/loss is OPERATING wherever printed - a separate face line (e.g. Coforge
+  # "Net loss on exchange fluctuations") stays in EBITDA, and FX netted inside Other Income
+  # (e.g. Birlasoft Note 24, loss 646.59 mn) is pulled out of Other Income and into EBITDA.
+  # Only non-operating treasury/other income is stripped.
+  fx_treatment: operating_wherever_presented
+  separate_fx_line_on_face: operating
+  fx_in_other_income: operating
+  exclude_exceptional_items: true            # LOCKED
+  continuing_operations_only: true           # LOCKED
+
+pe:
+  # LOCKED: primary P/E on Adjusted PAT = continuing-ops PAT attributable to owners, ex exceptional items
+  # (tax-effected). Reported P/E (total PAT attributable to owners) shown as a memo line.
+  primary: adjusted_pat
+  memo: reported_pat_attributable_to_owners
+  # OPEN: tax effect on exceptional items = amount disclosed in the exceptional-item note if stated,
+  # otherwise the Indian statutory rate below.
+  exceptional_tax_rate_default: 0.25168
+  # OPEN: discontinued-ops profit is treated as 100% attributable to owners unless the note splits it.
+  discontinued_nci_share_default: 0.0
+
+enterprise_value:
+  include_lease_liabilities: true            # LOCKED (Ind AS 116, current + non-current)
+  debt_like:
+    earn_outs_contingent_consideration: true # LOCKED
+    put_option_liabilities_over_nci: true    # LOCKED
+    deferred_consideration: true             # LOCKED
+  nci:
+    listed_subsidiaries: market_value        # LOCKED: market cap of sub x NCI %
+    unlisted_subsidiaries: book_value        # LOCKED
+  cash:
+    cash_and_cash_equivalents: true          # LOCKED
+    other_bank_balances: true                # LOCKED (deposits > 3 months)
+    exclude_restricted: true                 # LOCKED: margin money, unpaid/unclaimed dividend, escrow, lien, vs guarantees
+    current_investments_liquid: true         # LOCKED: liquid/debt MFs, index funds, CPs, bonds, term deposits
+    non_current_treasury_investments: true   # LOCKED: bonds, NCDs, term deposits held as treasury
+    invits_reits_as_treasury: true           # LOCKED (user, 2026-11-19): listed InvIT / REIT units count as treasury cash
+    strategic_equity_stakes: false           # never cash
+  finance_lease_receivable_as_cash: false    # LOCKED
+  subtract_associates_jv: true
+
+shares:
+  dilution_method: treasury_stock            # on ESOPs/RSUs from the share-based payment note

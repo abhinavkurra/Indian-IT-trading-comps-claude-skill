@@ -1,0 +1,61 @@
+# Peer universe for v1 (FY26A, all March year-end).
+# co_id is the key used for work/<co_id>/ and must match the PDF filename stem prefix.
+fiscal_year: FY26
+balance_sheet_date: 2026-03-31
+
+peers:
+  - co_id: persistent
+    name: Persistent Systems
+    nse: PERSISTENT.NS
+    pdf: persistent_ar.pdf
+    listed_subsidiaries: []
+  - co_id: coforge
+    name: Coforge
+    nse: COFORGE.NS
+    pdf: coforge_ar.pdf
+    # FY26 AR Note 12 (printed p.300): "Disposal of Non-Controlling Interest (Refer note 35(C))
+    # (19,945)" -> Cigniti merged in during FY26. Residual NCI INR 1,430 mn is unlisted -> book value.
+    # Note 12 also shows "Derecognition of NCI to Financial liability" -> put-option liability = debt.
+    listed_subsidiaries: []
+    # LOCKED (user, 2026-11-19): shown on FY26A numbers but excluded from peer statistics.
+    exclude_from_stats: true
+    stats_note: "Pro-forma pending: Encora acquisition closed 23-Apr-2026 (93.8 mn shares + USD 550 mn loan); FY26A excludes Encora. Re-include in v2 with Encora LTM."
+  - co_id: mphasis
+    name: Mphasis
+    nse: MPHASIS.NS
+    pdf: mphasis_ar.pdf
+    listed_subsidiaries: []
+  - co_id: ltimindtree
+    name: LTIMindtree
+    # LTIM.NS no longer returns data; Yahoo lists the company as "LTM Limited" (LTM.NS).
+    # Identity confirmed 2026-11-19: yfinance shares 296,496,945 vs AR 296,461,217 (+0.01%).
+    nse: LTM.NS
+    pdf: ltimindtree_ar.pdf
+    listed_subsidiaries: []
+  - co_id: birlasoft
+    name: Birlasoft
+    nse: BSOFT.NS
+    pdf: birlasoft_ar.pdf
+    listed_subsidiaries: []
+  - co_id: zensar
+    name: Zensar Technologies
+    nse: ZENSARTECH.NS
+    pdf: zensar_ar.pdf
+    listed_subsidiaries: []
+  - co_id: cyient
+    name: Cyient
+    nse: CYIENT.NS
+    pdf: cyient_ar.pdf
+    # Listed subsidiary -> NCI at market value (policy). EV NCI = total book NCI - this sub's book NCI
+    # + sub market cap x NCI %. Inputs cited from AR FY26 Note 15 / material-NCI disclosure.
+    listed_subsidiaries:
+      - name: Cyient DLM
+        nse: CYIENTDLM.NS
+        nci_pct: 0.4788                 # "Cyient DLM Limited India 47.88% 47.83%" (31-Mar-2026)
+        nci_book: 4846                  # "Accumulated balances of non-controlling interest 4,846" (INR Mn)
+        source: "AR FY26 material-NCI disclosure, PDF p.428"
+  - co_id: kpit
+    name: KPIT Technologies
+    nse: KPITTECH.NS
+    pdf: kpit_ar.pdf
+    listed_subsidiaries: []

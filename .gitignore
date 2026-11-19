@@ -221,3 +221,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ma-comps-engine: inputs, intermediates, outputs, secrets
+input_pdfs/*.pdf
+work/
+output/
+.env

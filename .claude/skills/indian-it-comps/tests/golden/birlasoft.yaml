@@ -1,0 +1,45 @@
+# GOLDEN VALUES - hand-keyed by a human from the sliced pages. Never edited by the pipeline.
+# Enter values exactly AS PRINTED (INR million, FY26 column, negatives as negative numbers).
+# `page` = printed folio; the matching slice file is listed so you can open it directly.
+co_id: birlasoft
+unit_as_printed: million
+period: FY26 (year ended 2026-03-31)
+
+pl:   # Consolidated Statement of Profit & Loss -> printed p.259 (work/birlasoft/pages/p131R.txt)
+  revenue_from_operations:        {value: 53099.58, page: 259}
+  other_income:                   {value: 648.05, page: 259}
+  purchases_equipment_software:   {value: 249.01, page: 259}
+  change_in_inventories:          {value: 57.68, page: 259}
+  employee_benefits_expense:      {value: 31707.79, page: 259}
+  finance_costs:                  {value: 196.02, page: 259}
+  depreciation_amortisation:      {value: 803.25, page: 259}
+  other_expenses:                 {value: 12424.62, page: 259}
+  exceptional_items:              {value: 406.88, page: 259}
+  profit_before_tax:              {value: 7902.38, page: 259}
+  total_tax_expense:              {value: 2718.81, page: 259}
+  profit_for_year:                {value: 5183.57, page: 259}
+  pat_attributable_to_owners:     {value: 5183.57, page: 259}
+  diluted_eps_inr:                {value: 18.50, page: 259}
+
+bs:   # Consolidated Balance Sheet -> printed p.258 (work/birlasoft/pages/p131L.txt)
+  total_assets:                   {value: 52662.53, page: 258}
+  borrowings_non_current:         {value: 51.30, page: 258}
+  borrowings_current:             {value: 32.02, page: 258}
+  lease_liabilities_non_current:  {value: 1053.71, page: 258}
+  lease_liabilities_current:      {value: 270.38, page: 258}
+  cash_and_cash_equivalents:      {value: 4260.34, page: 258}
+  other_bank_balances:            {value: 398.94, page: 258}
+  current_investments:            {value: 19904.52, page: 258}
+  non_current_investments:        {value: 1809.59, page: 258}
+  non_controlling_interest:       {value: 0, page: 258}   # 0 if no NCI line
+  equity_share_capital:           {value: 559.01, page: 258}
+
+notes:
+  current_investments_mutual_funds:   {value: 13713.47, page: 283}   # Note 8  (p143R.txt)
+  current_investments_term_deposits:  {value: 6022.91, page: 283}   # Note 8  (p143R.txt)
+  restricted_unclaimed_dividend:      {value: 7.79, page: 285}   # Note 10B (p144R.txt)
+  restricted_deposits_vs_guarantees:  {value: 128.57, page: 285}   # Note 10B note (ii)
+  face_value_per_share_inr:           {value: 2, page: [259, 286]}
+  shares_outstanding_year_end:        {value: 279506288, page: 286}   # Note 13A (p145L.txt), number of shares
+  esop_options_outstanding_year_end:  {value: 3537086, page: null}  # Note 39 (p162R-p164R.txt)
+  esop_weighted_avg_exercise_price:   {value: 174.31, page: null}  # Note 39

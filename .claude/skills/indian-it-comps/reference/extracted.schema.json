@@ -1,0 +1,181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "extracted.json - one company's FY figures as printed in the Annual Report",
+  "type": "object",
+  "required": ["co_id", "unit_as_printed", "period_end", "pl", "bs", "expense_lines",
+               "cash_components", "investment_components", "debt_like_items", "esop_plans", "shares", "flags"],
+  "additionalProperties": false,
+  "$defs": {
+    "cite": {"$ref": "#/$defs/cite_base", "unevaluatedProperties": false},
+    "cite_base": {
+      "type": "object",
+      "required": ["value", "uid", "printed_page", "label"],
+      "properties": {
+        "value": {"type": "number"},
+        "uid": {"type": "string", "pattern": "^p\\d{3}[FLR]$"},
+        "printed_page": {"type": ["integer", "null"]},
+        "label": {"type": "string", "minLength": 2},
+        "note": {"type": ["string", "null"]},
+        "comment": {"type": ["string", "null"]}
+      }
+    },
+    "cite_or_null": {"oneOf": [{"$ref": "#/$defs/cite"}, {"type": "null"}]}
+  },
+  "properties": {
+    "co_id": {"type": "string"},
+    "unit_as_printed": {"enum": ["crore", "million", "lakh", "thousand"]},
+    "period_end": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+
+    "pl": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["revenue_from_operations", "other_income", "total_expenses", "finance_costs",
+                   "depreciation_amortisation", "profit_before_exceptional_and_tax", "exceptional_charge",
+                   "profit_before_tax", "total_tax_expense", "profit_continuing_ops", "profit_discontinued_ops",
+                   "profit_for_year", "pat_owners", "pat_nci", "eps_basic", "eps_diluted",
+                   "fx_line_charge", "fx_in_other_income", "exceptional_tax_effect", "discontinued_attrib_owners",
+                   "eps_diluted_continuing"],
+      "properties": {
+        "revenue_from_operations": {"$ref": "#/$defs/cite"},
+        "other_income": {"$ref": "#/$defs/cite"},
+        "total_expenses": {"$ref": "#/$defs/cite"},
+        "finance_costs": {"$ref": "#/$defs/cite"},
+        "depreciation_amortisation": {"$ref": "#/$defs/cite"},
+        "profit_before_exceptional_and_tax": {"$ref": "#/$defs/cite"},
+        "exceptional_charge": {"$ref": "#/$defs/cite_or_null"},
+        "profit_before_tax": {"$ref": "#/$defs/cite"},
+        "total_tax_expense": {"$ref": "#/$defs/cite"},
+        "profit_continuing_ops": {"$ref": "#/$defs/cite_or_null"},
+        "profit_discontinued_ops": {"$ref": "#/$defs/cite_or_null"},
+        "profit_for_year": {"$ref": "#/$defs/cite"},
+        "pat_owners": {"$ref": "#/$defs/cite"},
+        "pat_nci": {"$ref": "#/$defs/cite_or_null"},
+        "eps_basic": {"$ref": "#/$defs/cite"},
+        "eps_diluted": {"$ref": "#/$defs/cite"},
+        "fx_line_charge": {"$ref": "#/$defs/cite_or_null"},
+        "fx_in_other_income": {"$ref": "#/$defs/cite_or_null"},
+        "share_of_equity_investees": {"$ref": "#/$defs/cite_or_null"},
+        "fx_in_other_income_extra": {"type": "array", "items": {"$ref": "#/$defs/cite"}},
+        "eps_diluted_continuing": {"$ref": "#/$defs/cite_or_null"},
+        "exceptional_tax_effect": {"$ref": "#/$defs/cite_or_null"},
+        "discontinued_attrib_owners": {"$ref": "#/$defs/cite_or_null"}
+      }
+    },
+
+    "bs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total_assets", "total_equity_and_liabilities", "total_equity", "equity_owners", "nci",
+                   "equity_share_capital", "borrowings_non_current", "borrowings_current",
+                   "lease_liabilities_non_current", "lease_liabilities_current", "cash_and_cash_equivalents",
+                   "other_bank_balances", "current_investments", "non_current_investments",
+                   "finance_lease_receivable", "equity_method_investments", "assets_held_for_sale",
+                   "liabilities_held_for_sale"],
+      "properties": {
+        "total_assets": {"$ref": "#/$defs/cite"},
+        "total_equity_and_liabilities": {"$ref": "#/$defs/cite"},
+        "total_equity": {"$ref": "#/$defs/cite"},
+        "equity_owners": {"$ref": "#/$defs/cite_or_null"},
+        "nci": {"$ref": "#/$defs/cite_or_null"},
+        "equity_share_capital": {"$ref": "#/$defs/cite"},
+        "borrowings_non_current": {"$ref": "#/$defs/cite_or_null"},
+        "borrowings_current": {"$ref": "#/$defs/cite_or_null"},
+        "lease_liabilities_non_current": {"$ref": "#/$defs/cite_or_null"},
+        "lease_liabilities_current": {"$ref": "#/$defs/cite_or_null"},
+        "cash_and_cash_equivalents": {"$ref": "#/$defs/cite"},
+        "other_bank_balances": {"$ref": "#/$defs/cite_or_null"},
+        "current_investments": {"$ref": "#/$defs/cite_or_null"},
+        "non_current_investments": {"$ref": "#/$defs/cite_or_null"},
+        "finance_lease_receivable": {"type": "array", "items": {"$ref": "#/$defs/cite"}},
+        "equity_method_investments": {"$ref": "#/$defs/cite_or_null"},
+        "assets_held_for_sale": {"$ref": "#/$defs/cite_or_null"},
+        "liabilities_held_for_sale": {"$ref": "#/$defs/cite_or_null"}
+      }
+    },
+
+    "expense_lines": {
+      "description": "Every expense line on the P&L face between Total income and Total expenses, as printed (credits negative).",
+      "type": "array", "minItems": 2, "items": {"$ref": "#/$defs/cite"}
+    },
+
+    "cash_components": {
+      "description": "Every line of the cash & cash equivalents note and the other bank balances note.",
+      "type": "array",
+      "items": {
+        "allOf": [{"$ref": "#/$defs/cite_base"}],
+        "type": "object",
+        "required": ["bucket", "restricted"],
+        "properties": {
+          "bucket": {"enum": ["cash_and_cash_equivalents", "other_bank_balances"]},
+          "restricted": {"type": "boolean"}
+        },
+        "unevaluatedProperties": false
+      }
+    },
+
+    "restricted_carveouts": {
+      "description": "Restricted amounts disclosed only in narrative (e.g. 'deposits include X held against guarantees'). Subtracted from cash.",
+      "type": "array", "items": {"$ref": "#/$defs/cite"}
+    },
+
+    "investment_components": {
+      "type": "array",
+      "items": {
+        "allOf": [{"$ref": "#/$defs/cite_base"}],
+        "type": "object",
+        "required": ["bucket", "classification"],
+        "properties": {
+          "bucket": {"enum": ["current", "non_current"]},
+          "classification": {"enum": ["treasury", "strategic_equity", "restricted", "other"]}
+        },
+        "unevaluatedProperties": false
+      }
+    },
+
+    "debt_like_items": {
+      "type": "array",
+      "items": {
+        "allOf": [{"$ref": "#/$defs/cite_base"}],
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": {"enum": ["contingent_consideration", "deferred_consideration", "put_option_liability", "other"]}
+        },
+        "unevaluatedProperties": false
+      }
+    },
+
+    "esop_plans": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["plan", "outstanding_year_end", "waep_inr", "uid", "printed_page"],
+        "additionalProperties": false,
+        "properties": {
+          "plan": {"type": "string"},
+          "instrument": {"enum": ["option", "rsu", "psu", "sar"]},
+          "outstanding_year_end": {"type": "number"},
+          "waep_inr": {"type": ["number", "null"]},
+          "exercisable_year_end": {"type": ["number", "null"]},
+          "uid": {"type": "string"},
+          "printed_page": {"type": ["integer", "null"]},
+          "comment": {"type": ["string", "null"]}
+        }
+      }
+    },
+
+    "shares": {
+      "type": "object",
+      "required": ["shares_outstanding_year_end", "face_value_inr", "treasury_shares"],
+      "additionalProperties": false,
+      "properties": {
+        "shares_outstanding_year_end": {"$ref": "#/$defs/cite"},
+        "face_value_inr": {"$ref": "#/$defs/cite"},
+        "treasury_shares": {"$ref": "#/$defs/cite_or_null"},
+        "weighted_avg_diluted_shares": {"$ref": "#/$defs/cite_or_null"}
+      }
+    },
+
+    "flags": {"type": "array", "items": {"type": "string"}}
+  }
+}

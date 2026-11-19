@@ -1,0 +1,27 @@
+# Share bridge: AR year-end count -> basic shares used for market cap.
+#   basic = AR year-end shares - treasury shares + sum(adjustments where include: true)
+# Every adjustment cites the AR. `include: false` items are listed so the yfinance
+# reconciliation can explain them, but they are NOT in the valuation share count.
+# Principle (v1, FY26A): the share count must match the perimeter of the FY26 financials.
+# market_data.py BLOCKS a company if yfinance minus (AR + all adjustments) is unexplained beyond 0.5%.
+
+coforge:
+  adjustments:
+    - label: "Cigniti amalgamation - shares to be allotted 1:1 to Cigniti NCI holders"
+      shares: 12671602
+      include: true          # Cigniti already 100% in FY26 financials (NCI disposed, Note 12/35)
+      source: "AR FY26 Note 35, printed p.330 (work/coforge/pages/p167L.txt)"
+    - label: "Encora share swap, allotted 23-Apr-2026 at INR 1,815.91 (post balance sheet)"
+      shares: 93796508
+      include: false         # OPEN: pre-transaction basis - Encora not in FY26 revenue/EBITDA
+      source: "AR FY26 subsequent-events disclosure, printed p.340 (work/coforge/pages/p172L.txt)"
+
+# LOCKED (user, 2026-11-19): use the yfinance share count as basic shares. The cause of the gap vs the
+# AR year-end count is NOT documented - an issuance or buyback after 31-Mar-2026 may mean the share
+# count no longer matches the FY26 financial perimeter (cash / acquisitions). Flagged in the workbook.
+persistent:
+  basic_shares_source: yfinance
+  reason: "yfinance 164.59 mn vs AR 157.75 mn (+4.3%), cause undocumented - user instruction to use yfinance"
+cyient:
+  basic_shares_source: yfinance
+  reason: "yfinance 104.25 mn vs AR 111.13 mn (-6.2%), cause undocumented - user instruction to use yfinance"

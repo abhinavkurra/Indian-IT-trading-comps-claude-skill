@@ -1,0 +1,59 @@
+# GOLDEN VALUES - hand-keyed by a human from the sliced pages. Never edited by the pipeline.
+# Enter values exactly AS PRINTED (INR Mn, FY26 column, Indian grouping removed: 1,64,027 -> 164027).
+# Negatives as negative numbers. Use 0 if the line is printed as "-"; use 0 for fields that do not exist.
+# `page` = printed folio (a list is allowed if the figure is printed on several pages).
+# `path` / `sum` tell score_golden.py where to look in extracted.json - do not edit those.
+co_id: coforge
+unit_as_printed: million
+period: FY26 (year ended 2026-03-31)
+
+pl:   # Consolidated Statement of Profit and Loss -> printed p.267 (work/coforge/pages/p135R.txt)
+  revenue_from_operations:        {value: 164027, page: 267}
+  other_income:                   {value: 732, page: 267}
+  purchases_stock_in_trade:       {value: 65, page: 267, sum: {list: expense_lines, label: "purchase"}}
+  employee_benefits_expense:      {value: 92161, page: 267}
+  professional_charges:           {value: 21918, page: 267, sum: {list: expense_lines, label: "professional"}}
+  other_production_expenses:      {value: 12045, page: 267, sum: {list: expense_lines, label: "production"}}
+  finance_costs:                  {value: 1686, page: 267}
+  depreciation_amortisation:      {value: 6819, page: 267}
+  net_loss_exchange_fluctuations: {value: 1103, page: 267, path: pl.fx_line_charge}
+  other_expenses:                 {value: 7374, page: 267}
+  total_expenses:                 {value: 143171, page: 267, path: pl.total_expenses}
+  exceptional_items:              {value: 2260, page: 267}
+  profit_before_tax:              {value: 19328, page: 267}
+  total_tax_expense:              {value: 2583, page: 267}
+  profit_continuing_ops:          {value: 16745, page: 267, path: pl.profit_continuing_ops}
+  profit_discontinued_ops:        {value: 702, page: 267, path: pl.profit_discontinued_ops}
+  profit_for_year:                {value: 17447, page: 267}
+  pat_attributable_to_owners:     {value: 15557, page: 267}
+  pat_attributable_to_nci:        {value: 1890, page: 267, path: pl.pat_nci}
+  diluted_eps_inr:                {value: 45.90, page: 267}   # continuing + discontinued
+  diluted_eps_continuing_inr:     {value: 43.83, page: 267, path: pl.eps_diluted_continuing}
+
+bs:   # Consolidated Balance Sheet -> printed p.266 (work/coforge/pages/p135L.txt)
+  total_assets:                   {value: 148814, page: 266}
+  borrowings_non_current:         {value: 1167, page: 266}
+  borrowings_current:             {value: 2830, page: 266}
+  lease_liabilities_non_current:  {value: 2187, page: 266}
+  lease_liabilities_current:      {value: 1094, page: 266}
+  cash_and_cash_equivalents:      {value: 10936, page: 266}
+  other_bank_balances:            {value: 56, page: 266}
+  current_investments:            {value: 0, page: 266}
+  non_current_investments:        {value: 0, page: 266}   # 0 if no non-current investments line
+  non_controlling_interest:       {value: 1430, page: 266}
+  equity_share_capital:           {value: 672, page: 266}
+  assets_held_for_sale:           {value: 0, page: 266, path: bs.assets_held_for_sale}
+
+notes:
+  fx_in_other_income:                 {value: 0, page: 308, path: pl.fx_in_other_income}   # Note 18 (p156L.txt); 0 if no FX line
+  restricted_unpaid_dividend:         {value: 43, page: 294, sum: {list: cash_components, label: "dividend", restricted: true}}   # Note 5(iv) (p149L.txt)
+  restricted_margin_money:            {value: 0, page: 293, sum: {list: restricted_carveouts, label: "margin"}}   # Note 5(iii) note (a) (p148R.txt)
+  future_acquisition_liab_current:    {value: 1010, page: 302, sum: {list: debt_like_items, label: "future acquisition.*\\s-\\s+current$"}}       # Note 13(v) (p153L.txt)
+  future_acquisition_liab_non_current: {value: 2237, page: 302, sum: {list: debt_like_items, label: "future acquisition.*non-current"}}   # Note 13(v)
+  contingent_consideration_total:     {value: 0, page: 302, sum: {list: debt_like_items, label: ".", type: contingent_consideration}}  # Notes 13(v)/35; 0 if none
+  exceptional_tax_effect:             {value: 0, page: 310, path: pl.exceptional_tax_effect}   # Note 25 (p157L.txt); 0 if not stated
+  discontinued_attrib_owners:         {value: 702, page: 330, path: pl.discontinued_attrib_owners}   # Note 36 (p167L/R.txt); 0 if not split
+  face_value_per_share_inr:           {value: 2, page: [267, 297]}
+  shares_outstanding_year_end:        {value: 335810937, page: 297}   # Note 10 (p150R.txt), post 1:5 split count
+  esop_options_outstanding_year_end:  {value: 6959599, page: 333}  # Note 40 (p168R-p169R.txt), all plans combined
+  esop_weighted_avg_exercise_price:   {value: 463.94, page: 333}  # Note 40, combined weighted average
